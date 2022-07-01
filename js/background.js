@@ -1,13 +1,16 @@
+
+
 let url = '';
 
 chrome.tabs.query({active: true, lastFocusedWindow: true}, tabs => {
   url = tabs[0].url;
+  console.log(url);
 });
 
-chrome.runtime.onInstalled.addListener(() => {
-  chrome.storage.sync.set({ url });
-  console.log(`The url is stored as:${url}`);
-});
+// chrome.runtime.onInstalled.addListener(() => {
+//   chrome.storage.sync.set({ 'url': url });
+//   console.log(`The url is stored as:${url}`);
+// });
 
 let color = '#3aa757';
 
