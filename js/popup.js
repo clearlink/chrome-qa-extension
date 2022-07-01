@@ -37,10 +37,10 @@ function openTabs(url, path) {
   //   chrome.tabs.update(undefined, {url: "https://www.google.com"});
   // });
 
-    chrome.tabs.create({
-      url : url + path,
-      active: false
-    });
+  chrome.tabs.create({
+    url : url + path,
+    active: false
+  });
 
 }
 
