@@ -14,21 +14,23 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 });
 
+
 // PIPELINE
 
 function _onClickAction(url) {
 
-  console.log(url);
+  console.log(url.hostname);
   let siteName = getSite();
   let paths = getPaths(siteName, url);
 
   paths.forEach(path => 
     openTabs(url, path)
   );
+}
+
 
 // CREATE THE TABS
 
-}
 function openTabs(url, path) {
   // if want to update current url (future)
   // chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
@@ -42,6 +44,7 @@ function openTabs(url, path) {
 
 }
 
+
 // GET POPUP SELECT VALUE
 
 function getSite(){
@@ -49,6 +52,7 @@ function getSite(){
  
   return selectedSite;
 }
+
 
 // CHOOSE WHICH PATHS TO SELECT
 
@@ -80,11 +84,15 @@ function getPaths(siteName){
     case 'safewise':
       urls = safewiseUrls();
       break;
+    // case 'extension_test':
+    //   urls = '';
+    //   break;
     
   }
 
   return urls
 }
+
 
 // PATHS LISTS
 
