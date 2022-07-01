@@ -1,57 +1,49 @@
 
-function _onClickAction() {
+document.addEventListener("DOMContentLoaded", function () {
+  // document.getElementById("sites").onclick = ;
+  sites.addEventListener("click", async () => {
 
-  let target_url = getTargetUrl();
-  let site = getSite();
-  let paths = getPaths(site, target_url);
+  let [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+
+  console.log(tab);
+
+    await chrome.scripting.executeScript({
+      target: { tabId: tab.id },
+      function: _onClickAction(tab.url),
+
+    });
+  });
+});
+
+// PIPELINE
+
+function _onClickAction(url) {
+
+  console.log(url);
+  let siteName = getSite();
+  let paths = getPaths(siteName, url);
 
   paths.forEach(path => 
-    openTabs(path)
+    openTabs(url, path)
   );
 
+// CREATE THE TABS
+
 }
-function openTabs(path) {
-  //update current url
+function openTabs(url, path) {
+  // if want to update current url (future)
   // chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
   //   chrome.tabs.update(undefined, {url: "https://www.google.com"});
   // });
 
-  // open new tab with current url
-    // chrome.tabs.create({
-    //   url : url
-    // });
+    chrome.tabs.create({
+      url : url + path,
+      active: false
+    });
 
 }
 
-function getTargetUrl(){
-  // target url is set in chrome.storage from background.js
-
-  // chrome.windows.getCurrent(w => {
-  //   chrome.tabs.query({active: true, windowId: w.id}, tabs => {
-  //     const target_url = tabs[0].id;
-  //     // use tabId here...
-  //   });
-  // });
-
-  let target_url = 'default';
-
-  chrome.tabs.query({active: true, lastFocusedWindow: true}, tabs => {
-    console.log(tabs[0]);
-  });
-
-  alert(target_url);
-  return target_url;
-}
-
-function businessUrls(){
-  var paths = 
-  [
-      "/finance/loans/best-crowdfunding-sites-for-startups/",
-      "/finance/accounting/small-business-bookkeeping-basics/"
-  ]
-
-  return paths;
-};
+// GET POPUP SELECT VALUE
 
 function getSite(){
   var selectedSite = document.getElementById("sites").value;
@@ -59,24 +51,157 @@ function getSite(){
   return selectedSite;
 }
 
-function getPaths(site){
+// CHOOSE WHICH PATHS TO SELECT
+
+function getPaths(siteName){
   let urls = [];
 
-  switch(site) {
+  switch(siteName) {
     case 'business':
       urls = businessUrls();
       break;
     case 'reviews':
-      //urls = reviewsUrls();
+      urls = reviewsUrls();
       break;
-    default:
+    case 'move':
+      urls = moveUrls();
       break;
+    case 'safewise':
+      urls = safewiseUrls();
+      break;
+    case 'satellite_internet':
+      urls = satelliteInternetUrls();
+      break;
+    case 'high_speed_internet':
+      urls = highSpeedInternetUrls();
+      break;
+    case 'cable_tv':
+      urls = CableTVUrls();
+      break;
+    case 'software_guides':
+      urls = softwareGuidesUrls();
+      break;
+    
+
   }
 
   return urls
-
 }
 
-document.addEventListener("DOMContentLoaded", function () {
-  document.getElementById("sites").onclick = _onClickAction;
-});
+// PATHS LISTS
+
+function businessUrls(){
+  var paths = 
+  [
+      "/finance/loans/business-startup-costs/",
+      "/finance/loans/business-loan-requirements/",
+      "/finance/accounting/best-payroll-companies/",
+      "/software/point-of-sale/best-pos-systems-for-business/",
+      "/services/internet/best-business-high-speed-internet-providers/",
+      "/finance/loans/commercial-loan-calculator/",
+      "/finance/loans/business-loan-calculator/",
+      "/finance/loans/sba-business-loan-calculator/"
+  ]
+
+  return paths;
+};
+
+function reviewsUrls(){
+  var paths = 
+  [
+      "/home-security/best-home-security-systems/",
+      "/home-security/best-outdoor-security-cameras/ ",
+      "/home-security/vivint-smart-home-security-review/",
+      "/tv-service/best-tv-service-providers/",
+      "/tv-service/dish-vs-directv/",
+      "/tv-service/dish-network-review/",
+      "/internet-service/best-satellite-internet-providers/",
+      "/internet-service/best-internet-service-providers/",
+      "/internet-service/how-to-speed-internet-connection/",
+      "/mobile/best-cell-phone-plans/",
+      "/mobile/best-cell-phone-coverage/",
+      "/mobile/visible-wireless-review/ "
+  ]
+
+  return paths;
+};
+
+function moveUrls(){
+  var paths = 
+  [
+      "/best-movers/long-distance/",
+      "/best-interstate-moving-companies/",
+      "/best-car-shipping-companies/",
+      "/best-moving-container-companies/",
+      "/utility-bills-101/"
+  ]
+
+  return paths;
+};
+
+function safewiseUrls(){
+  var paths = 
+  [
+      "/best-home-security-system/",
+      "/blog/best-wireless-security-cameras/",
+      "/resources/wearable-gps-tracking-devices-for-kids-guide/",
+      "/state-of-safety/"
+  ]
+
+  return paths;
+};
+
+function satelliteInternetUrls(){
+  var paths = 
+  [
+      "/in-your-area/",
+      "/resources/high-speed-internet-for-rural-areas/",
+      "/providers/starlink/",
+      "/resources/viasat-vs-hughesnet/"
+  ]
+
+  return paths;
+};
+
+function highSpeedInternetUrls(){
+  var paths = 
+  [
+      "/providers/",
+      "/tools/speed-test/",
+      "/view-plans3/",
+      "/resources/internet-for-veterans/",
+      "/resources/no-internet-connection-troubleshooting-guide/",
+      "/how-much-internet-speed-do-i-need/",
+      "/ca/los-angeles/",
+      "/tx/houston/"
+  ]
+
+  return paths;
+};
+
+function CableTVUrls(){
+  var paths = 
+  [
+      "/xfinity/internet/",
+      "/blog/best-streaming-services/",
+      "/blog/low-income-internet/",
+      "/ny/new-york/",
+      "/tx/san-antonio/",
+      "/blog"
+  ]
+
+  return paths;
+};
+
+function softwareGuidesUrls(){
+  var paths = 
+  [
+      "/project-management-software/",
+      "/workforce-management-software/",
+      "/scheduling-software/",
+      "/learning-management-systems/",
+      "/crm-software-2/ "
+  ]
+
+  return paths;
+};
