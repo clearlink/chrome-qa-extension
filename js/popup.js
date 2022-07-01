@@ -1,6 +1,5 @@
 
 document.addEventListener("DOMContentLoaded", function () {
-  // document.getElementById("sites").onclick = ;
   sites.addEventListener("click", async () => {
 
   let [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
@@ -60,29 +59,28 @@ function getPaths(siteName){
     case 'business':
       urls = businessUrls();
       break;
-    case 'reviews':
-      urls = reviewsUrls();
-      break;
-    case 'move':
-      urls = moveUrls();
-      break;
-    case 'safewise':
-      urls = safewiseUrls();
-      break;
-    case 'satellite_internet':
-      urls = satelliteInternetUrls();
+    case 'cable_tv':
+      urls = CableTVUrls();
       break;
     case 'high_speed_internet':
       urls = highSpeedInternetUrls();
       break;
-    case 'cable_tv':
-      urls = CableTVUrls();
+    case 'move':
+      urls = moveUrls();
+      break;
+    case 'reviews':
+      urls = reviewsUrls();
+      break;
+    case 'satellite_internet':
+      urls = satelliteInternetUrls();
       break;
     case 'software_guides':
       urls = softwareGuidesUrls();
       break;
+    case 'safewise':
+      urls = safewiseUrls();
+      break;
     
-
   }
 
   return urls
@@ -90,6 +88,7 @@ function getPaths(siteName){
 
 // PATHS LISTS
 
+// borg
 function businessUrls(){
   var paths = 
   [
@@ -106,6 +105,53 @@ function businessUrls(){
   return paths;
 };
 
+// ctv
+function CableTVUrls(){
+  var paths = 
+  [
+      "/xfinity/internet/",
+      "/blog/best-streaming-services/",
+      "/blog/low-income-internet/",
+      "/ny/new-york/",
+      "/tx/san-antonio/",
+      "/blog"
+  ]
+
+  return paths;
+};
+
+// hsi
+function highSpeedInternetUrls(){
+  var paths = 
+  [
+      "/providers/",
+      "/tools/speed-test/",
+      "/view-plans3/",
+      "/resources/internet-for-veterans/",
+      "/resources/no-internet-connection-troubleshooting-guide/",
+      "/how-much-internet-speed-do-i-need/",
+      "/ca/los-angeles/",
+      "/tx/houston/"
+  ]
+
+  return paths;
+};
+
+// mov
+function moveUrls(){
+  var paths = 
+  [
+      "/best-movers/long-distance/",
+      "/best-interstate-moving-companies/",
+      "/best-car-shipping-companies/",
+      "/best-moving-container-companies/",
+      "/utility-bills-101/"
+  ]
+
+  return paths;
+};
+
+// rev
 function reviewsUrls(){
   var paths = 
   [
@@ -126,31 +172,7 @@ function reviewsUrls(){
   return paths;
 };
 
-function moveUrls(){
-  var paths = 
-  [
-      "/best-movers/long-distance/",
-      "/best-interstate-moving-companies/",
-      "/best-car-shipping-companies/",
-      "/best-moving-container-companies/",
-      "/utility-bills-101/"
-  ]
-
-  return paths;
-};
-
-function safewiseUrls(){
-  var paths = 
-  [
-      "/best-home-security-system/",
-      "/blog/best-wireless-security-cameras/",
-      "/resources/wearable-gps-tracking-devices-for-kids-guide/",
-      "/state-of-safety/"
-  ]
-
-  return paths;
-};
-
+// si
 function satelliteInternetUrls(){
   var paths = 
   [
@@ -163,36 +185,7 @@ function satelliteInternetUrls(){
   return paths;
 };
 
-function highSpeedInternetUrls(){
-  var paths = 
-  [
-      "/providers/",
-      "/tools/speed-test/",
-      "/view-plans3/",
-      "/resources/internet-for-veterans/",
-      "/resources/no-internet-connection-troubleshooting-guide/",
-      "/how-much-internet-speed-do-i-need/",
-      "/ca/los-angeles/",
-      "/tx/houston/"
-  ]
-
-  return paths;
-};
-
-function CableTVUrls(){
-  var paths = 
-  [
-      "/xfinity/internet/",
-      "/blog/best-streaming-services/",
-      "/blog/low-income-internet/",
-      "/ny/new-york/",
-      "/tx/san-antonio/",
-      "/blog"
-  ]
-
-  return paths;
-};
-
+// swg
 function softwareGuidesUrls(){
   var paths = 
   [
@@ -201,6 +194,19 @@ function softwareGuidesUrls(){
       "/scheduling-software/",
       "/learning-management-systems/",
       "/crm-software-2/ "
+  ]
+
+  return paths;
+};
+
+// sw
+function safewiseUrls(){
+  var paths = 
+  [
+      "/best-home-security-system/",
+      "/blog/best-wireless-security-cameras/",
+      "/resources/wearable-gps-tracking-devices-for-kids-guide/",
+      "/state-of-safety/"
   ]
 
   return paths;
