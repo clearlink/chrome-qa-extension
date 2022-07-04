@@ -9,10 +9,16 @@ document.addEventListener("DOMContentLoaded", function () {
     await chrome.scripting.executeScript({
       target: { tabId: tab.id },
       function: _onClickAction(tab.url),
-
     });
+
+    await chrome.scripting.executeScript({
+      target: { tabId: tab.id },
+      files: ['draggable_div.js']
+    });
+
   });
 });
+
 
 
 // PIPELINE
