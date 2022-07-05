@@ -6,74 +6,191 @@ document.addEventListener("DOMContentLoaded", async () => {
   console.log(tab);
   await chrome.scripting.executeScript({
     target: { tabId: tab.id },
-    function: getTestURLS(tab.url),
+    function: getTestURLS(tab),
   });
 });
 
 
 // PIPELINE
 
-function getTestURLS(url) {
+function getTestURLS(tab) {
+  console.log(tab);
+  var url = tab.url;
+  var urlHost = getURLHost(url);
   var mydiv = document.getElementById("rainbow-box");
-  let siteName = getSite(url);
-  let paths = getPaths(siteName, url);
+  let siteName = getSite(tab, urlHost);
+  let isLocalHost = urlHost.indexOf("localhost") > 1;
 
-  if (paths.length == 0){
+  // for sites not detected, and not localhost
+  if ( !isLocalHost && (siteName == "other")){
     var noneFound = document.createElement('p');
 
     noneFound.innerText = 'No Test Pages Found';
     mydiv.appendChild(noneFound);
   }
 
+  // for localhost
+  if ( isLocalHost ){
+    console.log("in local host");
+    
+    var selectList = document.createElement("div");
+    selectList.name = "sites";
+    selectList.id = "sites";
+    mydiv.appendChild(selectList);
+
+    let allSites = getAllSites();
+
+    for (let site of allSites) {
+      var option = document.createElement("a");
+      var linebreak = document.createElement("br");
+      
+      option.value = site[1];
+      option.innerText = site[0];
+
+      option.onclick = function () {
+        let siteName = site[0].toLowerCase();
+        let mydiv = document.getElementById("rainbow-box");
+        let urlHost = getURLHost(url);
+        console.log("CLICK");
+        console.log(siteName);
+        console.log(mydiv);
+        console.log(urlHost);
+        document.getElementById("sites").remove();
+
+        (createPaths(siteName, mydiv, urlHost))
+        
+      };
+      
+      selectList.appendChild(option);
+      selectList.appendChild(linebreak);
+    }
+
+  }
+
+  // for detected sites not localhost
+  if ( !isLocalHost && (siteName != "other")){
+    createPaths(siteName, mydiv, urlHost);
+  }
+}
+
+// CREATE THE PATHS TO DISPLAY IN POPUP.HTML
+
+function createPaths(siteName, mydiv, urlHost){
+  let paths = getPaths(siteName);
+
   paths.forEach(path => {
     var aTag = document.createElement('a');
     var linebreak = document.createElement("br");
 
-    aTag.onclick = function() { 
-      chrome.tabs.update(undefined, {url: url + path}
-    )};
+    console.log(path);
     aTag.innerText = "/" + path;
     mydiv.appendChild(aTag);
     mydiv.appendChild(linebreak);
-  }  );
 
-  console.log(paths);
+    aTag.onclick = function() { 
+      chrome.tabs.update(undefined, {url: urlHost + path}
+    )};
+  });
+
+  var openAll = document.createElement('a');
+
+  openAll.innerText = "OPEN ALL IN NEW TABS";
+  mydiv.appendChild(openAll);
+
+  openAll.onclick = function() { 
+    openTabs(urlHost, paths)
+  };
+
+}
+
+
+// GET THE SITES AND THEIR MULTI NAMES
+
+function getAllSites(){
+  var allSites = [
+    ["Business", "borg"],
+    ["CableTV", "ctv"],
+    ["HighSpeedInternet", "hsi"],
+    ["Move", "move"],
+    ["Reviews", "reviews"],
+    ["SatelliteInternet", "Satellite Internet"],
+    ["SoftwareGuides", "softwareguides"],
+    ["Safewise", "SafeWise"]
+  ];
+  return allSites;
 }
 
 
 // CREATE THE TABS
-// deprecated
 
-function openTabs(url, path) {
-  chrome.tabs.create({
-    url : url + path,
-    active: false
-  });
+function openTabs(url, paths) {
+  for (let path of paths){
+    chrome.tabs.create({
+      url : url + path,
+      active: false
+    });
+  }
+}
+
+
+// GET THE URL HOST
+
+function getURLHost(url){
+  let urlHost = '';
+
+  if (url.indexOf(".com/") > 1){
+    let urlSplit = url.split('.com/');
+    urlSplit[0] = urlSplit[0] + '.com/';
+    urlHost = urlSplit[0];
+  }
+  if (url.indexOf(".io/") > 1){
+    let urlSplit = url.split('.io/');
+    urlSplit[0] = urlSplit[0] + '.io/';
+    urlHost = urlSplit[0];
+  }
+  if (url.indexOf(".ca/") > 1){
+    let urlSplit = url.split('.ca/');
+    urlSplit[0] = urlSplit[0] + '.ca/';
+    urlHost = urlSplit[0];
+  }
+  if (url.indexOf(".org/") > 1){
+    let urlSplit = url.split('.org/');
+    urlSplit[0] = urlSplit[0] + '.org/';
+    urlHost = urlSplit[0];
+  }
+  if (url.indexOf("localhost") > 1 ){
+    let index = url.indexOf("localhost") + "localhost".length + 6;
+    urlHost = url.slice(0, index);
+  }
+
+  return urlHost;
+
 }
 
 
 // GET POPUP SELECT VALUE
 
-function getSite(url){
-    var allSites = [
-        "Business",
-        "CableTV",
-        "HighSpeedInternet",
-        "Move",
-        "Reviews",
-        "SatelliteInternet",
-        "SoftwareGuides",
-        "Safewise"
-    ];
-    let currentSite = 'current';
+function getSite(tab, urlHost){
+  let title = tab.title.toLowerCase();
+  console.log(title);
+  let url = tab.url;
+  let allSites = getAllSites();
 
-    allSites.forEach( site => {
+    let currentSite = 'other';
 
-        if (url.indexOf(site.toLowerCase()) > 1){
-            currentSite = site.toLowerCase();
+    for (let site of allSites) {
+      console.log(site[0]);
+        if (urlHost.indexOf(site[0].toString().toLowerCase()) > 1){
+          currentSite = site[0].toLowerCase();
+          break;
         }
-    });
+        if (urlHost.indexOf(site[1].toLowerCase()) > 1){
+          currentSite = site[0].toLowerCase();
+          break;
+        }
+      }
  
+  console.log(allSites);
   return currentSite;
 }
 
@@ -82,12 +199,13 @@ function getSite(url){
 
 function getPaths(siteName){
   let urls = [];
+  console.log(siteName);
 
   switch(siteName) {
     case 'business':
       urls = businessUrls();
       break;
-    case 'cable_tv':
+    case 'cabletv':
       urls = CableTVUrls();
       break;
     case 'highspeedinternet':
