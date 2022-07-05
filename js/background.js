@@ -1,7 +1,5 @@
 
-let url = '';
-
-chrome.tabs.query({active: true, lastFocusedWindow: true}, tabs => {
-  url = tabs[0].url;
-  console.log(url);
-});
+// chrome.runtime.addListener(() => {
+//   chrome.storage.sync.set({  });
+//   console.log('Default background color set to %cgreen', `color: ${color}`);
+// });
