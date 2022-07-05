@@ -1,35 +1,44 @@
 
-document.addEventListener("DOMContentLoaded", function () {
-  sites.addEventListener("click", async () => {
+document.addEventListener("DOMContentLoaded", async () => {
 
   let [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
 
   console.log(tab);
-
-    await chrome.scripting.executeScript({
-      target: { tabId: tab.id },
-      function: _onClickAction(tab.url),
-
-    });
+  await chrome.scripting.executeScript({
+    target: { tabId: tab.id },
+    function: getTestURLS(tab.url),
   });
 });
 
 
 // PIPELINE
 
-function _onClickAction(url) {
-
-  console.log(url.hostname);
-  let siteName = getSite();
+function getTestURLS(url) {
+  var mydiv = document.getElementById("rainbow-box");
+  let siteName = getSite(url);
   let paths = getPaths(siteName, url);
 
-  paths.forEach(path => 
-    openTabs(url, path)
-  );
+  if (paths.length == 0){
+    var noneFound = document.createElement('p');
+    noneFound.innerText = 'No Test Pages Found';
+    mydiv.appendChild(noneFound);
+  }
+
+  paths.forEach(path => {
+    var aTag = document.createElement('a');
+    var linebreak = document.createElement("br");
+    aTag.onclick = function() { 
+      chrome.tabs.update(undefined, {url: url + path}
+    )};
+    aTag.innerText = path;
+    mydiv.appendChild(aTag);
+    mydiv.appendChild(linebreak);
+  }  );
 }
 
 
 // CREATE THE TABS
+// deprecated
 
 function openTabs(url, path) {
   // if want to update current url (future)
@@ -41,17 +50,35 @@ function openTabs(url, path) {
     url : url + path,
     active: false
   });
-
 }
 
 
 // GET POPUP SELECT VALUE
 
-function getSite(){
-  var selectedSite = document.getElementById("sites").value;
+function getSite(url){
+    var allSites = [
+        "Business",
+        "CableTV",
+        "highSpeedInternet",
+        "Move",
+        "Reviews",
+        "SatelliteInternet",
+        "SoftwareGuides",
+        "Safewise"
+    ];
+    let currentSite = 'current';
+
+    allSites.forEach( site => {
+
+        if (url.indexOf(site.toLowerCase()) > 1){
+            currentSite = site.toLowerCase();
+        }
+    });
  
-  return selectedSite;
+  return currentSite;
 }
+
+
 
 
 // CHOOSE WHICH PATHS TO SELECT

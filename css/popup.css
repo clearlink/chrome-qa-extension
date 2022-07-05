@@ -15,15 +15,21 @@ button.current {
 body { 
   margin: 0 !important;
   padding: 0 !important;
+  width: max-content;
 }
 
-select {
+a, p{
   color:aqua;
   appearance: none;
   overflow-y: auto;
   border:0px;
   outline:0px;
   background: transparent;
+  padding: 5px;
+}
+
+a:hover {
+  cursor: pointer;
 }
 
 .rainbow-box {
@@ -33,5 +39,5 @@ select {
   border-image-slice: 1;
   height: auto;
   margin: auto;
-  width: 150;
+  width: auto;
 }
