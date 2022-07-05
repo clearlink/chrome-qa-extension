@@ -159,10 +159,10 @@ function highSpeedInternetUrls(){
       "tools/speed-test/",
       "view-plans3/",
       "resources/internet-for-veterans/",
-      "/resources/no-internet-connection-troubleshooting-guide/",
-      "/how-much-internet-speed-do-i-need/",
-      "/ca/los-angeles/",
-      "/tx/houston/"
+      "resources/no-internet-connection-troubleshooting-guide/",
+      "how-much-internet-speed-do-i-need/",
+      "ca/los-angeles/",
+      "tx/houston/"
   ]
 
   return paths;
