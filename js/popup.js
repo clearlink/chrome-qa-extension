@@ -79,8 +79,6 @@ function getSite(url){
 }
 
 
-
-
 // CHOOSE WHICH PATHS TO SELECT
 
 function getPaths(siteName){
@@ -111,10 +109,6 @@ function getPaths(siteName){
     case 'safewise':
       urls = safewiseUrls();
       break;
-    // case 'extension_test':
-    //   urls = '';
-    //   break;
-    
   }
 
   return urls
