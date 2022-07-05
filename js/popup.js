@@ -20,6 +20,7 @@ function getTestURLS(url) {
 
   if (paths.length == 0){
     var noneFound = document.createElement('p');
+
     noneFound.innerText = 'No Test Pages Found';
     mydiv.appendChild(noneFound);
   }
@@ -27,6 +28,7 @@ function getTestURLS(url) {
   paths.forEach(path => {
     var aTag = document.createElement('a');
     var linebreak = document.createElement("br");
+
     aTag.onclick = function() { 
       chrome.tabs.update(undefined, {url: url + path}
     )};
@@ -43,11 +45,6 @@ function getTestURLS(url) {
 // deprecated
 
 function openTabs(url, path) {
-  // if want to update current url (future)
-  // chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
-  //   chrome.tabs.update(undefined, {url: "https://www.google.com"});
-  // });
-
   chrome.tabs.create({
     url : url + path,
     active: false
