@@ -31,7 +31,7 @@ async function getTestURLS(tab){
     createPaths(siteName, mydiv, urlHost, lang);
   } 
   // If it didn't work earlier but still localhost, do it via fetch and schema for site name
-  else if (urlHost.includes('localhost')){
+  else if (urlHost.includes('local')){
   showAllSites(tab.url);
   const siteURL = await getSiteURL(tab);
   createPaths(siteURL, mydiv, urlHost, lang);
@@ -258,9 +258,10 @@ function getURLHost(url){
     urlSplit[0] = urlSplit[0] + '.org/';
     urlHost = urlSplit[0];
   }
-  else if (url.indexOf("localhost") > 1) {
-    let index = url.indexOf("localhost") + "localhost".length + 6;
-    urlHost = url.slice(0, index);
+  else if (url.indexOf(".local/") > 1){
+    let urlSplit = url.split('.local/');
+    urlSplit[0] = urlSplit[0] + '.local/';
+    urlHost = urlSplit[0];
   }
 
   return urlHost;
