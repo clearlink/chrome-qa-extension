@@ -3,16 +3,17 @@ body {
   margin: 0 !important;
   padding: 0 !important;
   width: max-content;
+  background: #093254;
+  border: 5px solid #587c91;
 }
 
-a, p, select{
+a, p, select, h1{
   display: inline-block;
-  color: aqua;
+  color: #b2e4f6;
   appearance: none;
   overflow-y: auto;
   border:0px;
   outline:0px;
-  background: transparent;
 }
 
 p {
@@ -30,11 +31,22 @@ a:hover {
   cursor: pointer;
 }
 
-.rainbow-box {
-  background-color: #302244;
-  border: 5px solid transparent;
-  border-image: linear-gradient(to bottom right, #b827fc 0%, #2c90fc 25%, #b8fd33 50%, #fec837 75%, #fd1892 100%);
-  border-image-slice: 1;
-  height: auto;
-  margin: auto;
+#header {
+  display: flex;
+  align-items: center; /* Aligns items vertically in the center */
+  border-bottom: 5px solid #587c91;
+}
+
+#header-logo {
+  margin-right: 10px; /* Adds some space between the logo and the title */
+  margin-left: 4px;
+}
+
+#header-title h1 {
+  margin: 0; /* Removes the default margin of h1 for better alignment */
+  font-size: 20px; /* Adjust the font size as needed */
+}
+
+#primary-container {
+  margin: 3px;
 }
