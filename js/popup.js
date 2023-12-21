@@ -15,11 +15,15 @@ document.addEventListener('DOMContentLoaded', function() {
         { action: "fetchData", url: baseUrl },
         response => {
           if (response.data) {
-            console.log('response data:', response.data);
+            console.log('response data:', response.data); // this goes to popup's console
+            if (response.data.code && response.data.code === 'unauthorized'){
+              showMessage('Issue with authorization. Please contact the CB Eng team if issue persists.');
+            } else {
               buildMenu(response.data);
+            }
           }
           if (response.error) {
-            console.log('response error:', response.error); // this goes to popup console
+            console.log('response error:', response.error); // this goes to popup's console
             showMessage('An error occurred while fetching data from this site.');
           }
         }
