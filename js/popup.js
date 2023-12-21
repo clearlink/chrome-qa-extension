@@ -40,6 +40,13 @@ const liveSites = [
   'https://www.move.org/',
 ]
 
+function getLangFromUrl(url) {
+  const urlPath = new URL(url).pathname;
+  if (urlPath.includes('/au/')) return 'au';
+  if (urlPath.includes('/es/')) return 'es';
+  return 'en'; // Default language
+}
+
 function isLiveSite(url) {
   let origin = new URL(url).origin;
   return liveSites.includes(origin);
@@ -61,18 +68,19 @@ function isEligibleSite(url) {
   return isLiveSite(url) || isFeatureBranch(url) || isLocalEnvironment(url);
 }
 
-function createLinks(key, data, baseUrl) {
+function createLinks(key, data, baseUrl, activeLang) {
   const container = document.getElementById('links-container');
-  container.innerHTML = ''; // Clear existing links
-
   const urls = data[key].split('\r\n');
+  
+  container.innerHTML = ''; // Clear existing links
 
   if (urls.length === 0 || urls[0] === '') {
     let message = key === 'high_priority_pages' ? 'No Priority Pages found.' : 'No Priority Pages found for this language.';
-    message += '\n\n';
-    message += 'Please wait 15 mins for cache to clear \n';
-    message += 'or contact the CB Eng team if this is an error.';
+    message += '<br><br>';
+    message += 'Please wait 15 mins for cache to clear or <br>';
+    message += 'contact the CB Eng team if this is an error.';
     showMessage(message);
+    createHomepageLink(baseUrl, activeLang, container);
     return;
   }
 
@@ -88,13 +96,25 @@ function createLinks(key, data, baseUrl) {
       container.appendChild(document.createElement('br')); // For spacing
     }  
   });
-}
 
-function getLangFromUrl(url) {
-  const urlPath = new URL(url).pathname;
-  if (urlPath.includes('/au/')) return 'au';
-  if (urlPath.includes('/es/')) return 'es';
-  return 'en'; // Default language
+  // Add homepage link
+  createHomepageLink(baseUrl, activeLang, container);
+  
+  // Add open all link
+  const openAllLink = document.createElement('a');
+  openAllLink.href = '#';
+  openAllLink.textContent = 'OPEN ALL IN NEW TABS';
+  openAllLink.onclick = function(e) {
+    e.preventDefault();
+    urls.forEach(relativePath => {
+      chrome.tabs.create({
+        url: baseUrl + relativePath, 
+        active: false
+      });
+    });
+  };
+  container.appendChild(openAllLink);
+  container.appendChild(document.createElement('br')); // For spacing
 }
 
 function buildMenu(data, overrideLang = null) {
@@ -110,13 +130,25 @@ function buildMenu(data, overrideLang = null) {
     const langKey = activeLang === 'en' ? defaultLangKey : `${defaultLangKey}_${activeLang}`;
 
     if (data.hasOwnProperty(langKey)) {
-      createLinks(langKey, data, baseUrl);
+      createLinks(langKey, data, baseUrl, activeLang);
     } else {
-      createLinks(defaultLangKey, data, baseUrl); // Fallback to default if not found
+      createLinks(defaultLangKey, data, baseUrl, activeLang); // Fallback to default if not found
     }
-
     createSwitchLinks(data, baseUrl, activeLang);
   });
+}
+
+function createHomepageLink(baseUrl, activeLang, container) {
+  const homepage = document.createElement('a');
+  const homeUrl = baseUrl + ((activeLang === 'en' || activeLang === 'qa') ? '' : `/${activeLang}`);
+
+  homepage.href = homeUrl;
+  homepage.textContent = (activeLang === 'en' || activeLang === 'qa') ? 'HOMEPAGE' : `${activeLang.toUpperCase()} HOMEPAGE `;
+  homepage.onclick = function() {
+    chrome.tabs.update(undefined, {url: homeUrl});
+  }
+  container.appendChild(homepage);
+  container.appendChild(document.createElement('br')); // For spacing
 }
 
 function createSwitchLinks(data, baseUrl, activeLang) {
@@ -127,7 +159,7 @@ function createSwitchLinks(data, baseUrl, activeLang) {
   possibleLangs.forEach(lang => {
     if (lang !== activeLang) {
       const key = lang === 'en' ? 'high_priority_pages' : `high_priority_pages_${lang}`;
-      addSwitchLinkIfExists(`${lang.toUpperCase()} Priority Pages`, key, data, baseUrl, lang);
+      addSwitchLinkIfExists(`SWITCH VIEW TO ${lang.toUpperCase()} PAGES`, key, data, baseUrl, lang);
     }
   });
 }
@@ -146,11 +178,11 @@ function addSwitchLinkIfExists(text, key, data, baseUrl, lang) {
   }
 }
 
-function showMessage(message) {
-  message = message.replace(/\n/g, '<br>'); // Replace newlines with <br>
-  const container = document.getElementById('links-container');
-  container.innerHTML = ''; // Clear existing links
+function showMessage(message, container = document.getElementById('links-container')) {
   const messageEl = document.createElement('p');
+
+  container.innerHTML = ''; // Clear existing links
   messageEl.innerHTML = message;
   container.appendChild(messageEl);
+  container.appendChild(document.createElement('br')); // For spacing
 }
