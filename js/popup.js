@@ -74,11 +74,10 @@ function isEligibleSite(url) {
 
 function createLinks(key, data, baseUrl, activeLang) {
   const container = document.getElementById('links-container');
-  const urls = data[key].split('\r\n');
   
   container.innerHTML = ''; // Clear existing links
 
-  if (urls.length === 0 || urls[0] === '') {
+  if (!data[key] || data[key] === '') {
     let message = key === 'high_priority_pages' ? 'No Priority Pages found.' : 'No Priority Pages found for this language.';
     message += '<br><br>';
     message += 'Please wait 15 mins for cache to clear or <br>';
@@ -87,6 +86,8 @@ function createLinks(key, data, baseUrl, activeLang) {
     createHomepageLink(baseUrl, activeLang, container);
     return;
   }
+  
+  const urls = data[key].split('\r\n');
 
   urls.forEach(relativePath => {
     if (relativePath) {
