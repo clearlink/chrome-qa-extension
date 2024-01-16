@@ -35,13 +35,13 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 const liveSites = [
-  'https://www.cabletv.com/',
-  'https://www.highspeedinternet.com/',
-  'https://www.reviews.org/',
-  'https://www.satelliteinternet.com/',
-  'https://www.safewise.com/',
-  'https://www.business.org/',
-  'https://www.move.org/',
+  'https://www.cabletv.com',
+  'https://www.highspeedinternet.com',
+  'https://www.reviews.org',
+  'https://www.satelliteinternet.com',
+  'https://www.safewise.com',
+  'https://www.business.org',
+  'https://www.move.org',
 ]
 
 function getLangFromUrl(url) {
