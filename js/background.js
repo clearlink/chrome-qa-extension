@@ -21,7 +21,6 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 
   if (request.action === "fetchData") {
     if (!isCacheStale(baseUrl) && cache[baseUrl]) {
-      console.log('Using cached data')
       sendResponse({data: cache[baseUrl].data}); // Send cached data if not stale
     } else {
       // Fetch new data, cache it, and send response
@@ -38,8 +37,6 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
             data: data,
             timestamp: new Date().getTime() // Update timestamp
           };
-          console.log(cache);
-          console.log(data);
           sendResponse({data: data});
         })
         .catch(error => sendResponse({error: error.toString()}));
